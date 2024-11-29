@@ -4,12 +4,12 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 // import { StackNavigationProp } from '@react-navigation/stack';
 type RootStackParamList = {
-  Formscreen: undefined;
+  FormScreen: undefined;
   PersonalInfo: {userData: any}; // Example of passing a `userData` parameter
 };
 
 type Props = {
-  navigation: NavigationProp<RootStackParamList, 'Formscreen'>;
+  navigation: NavigationProp<RootStackParamList, 'FormScreen'>;
   // route: RouteProp<RootStackParamList, 'Formscreen'>;
   // params: RouteProp<RootStackParamList, 'Formscreen'>;
 };
@@ -18,32 +18,32 @@ import React, {Component} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import MaterailIcons from 'react-native-vector-icons/MaterialIcons';
 import {responsiveWidth} from 'react-native-responsive-dimensions';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default class PersonalInfo extends Component<Props> {
+  
   onPressbackButton = () => {
-    this.props.navigation.navigate('Formscreen');
+    this.props.navigation.navigate('FormScreen');
   };
 
   render() {
-    // console.log('11',this.props.navigation);
-    const {firstName, lastName, emailId, mobile, imageUrl} =
-      this.props.route.params?.userData;
-    // console.log('26', firstName, lastName, emailId, mobile, imageUrl);
+
+    const {firstName, lastName, emailId, mobile, imageUrl,dateOfBirth,
+      education,pronounce,hometown,address,bloodGroup,brief,askme} = this.props.route.params?.userData;
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#ffffff'}}>
+        <ScrollView>
         <View style={styles.topContainer}>
-          <MaterailIcons name="arrow-back-ios" size={30} />
+          <MaterailIcons onPress={this.onPressbackButton} name="arrow-back-ios" size={30} />
           <View style={styles.profile}>
             <Text style={styles.profileText}>Profile</Text>
           </View>
-          {/* <Text style={styles.profileText}>Profile</Text> */}
         </View>
         <View style={styles.imgContainer}>
           <View>
             <Image style={styles.image} source={{uri: imageUrl}} />
             <TouchableOpacity
               style={styles.pencilIconContainer}
-              // onPress={this.onPressPickImage}
             >
               <SimpleLineIcons name="pencil" size={20} />
             </TouchableOpacity>
@@ -83,22 +83,66 @@ export default class PersonalInfo extends Component<Props> {
             </View>
           </View>
         </View>
-        {/* <Text>PersonalInfo</Text>
-        <TouchableOpacity onPress={this.onPressbackButton}>
-          <Text>Back</Text>
-        </TouchableOpacity>
-        <View style={styles.container}>
+
+        <View style={styles.infoContainer}>
           <View>
-            <Text>Personal Info</Text>
+            <Text style={styles.personalText}>Personal Info</Text>
             <TouchableOpacity
               style={styles.pencilIconContainer}
-              // onPress={this.onPressPickImage}
             >
               <SimpleLineIcons name="pencil" size={20} />
             </TouchableOpacity>
+          </View>
+          <View style={styles.contentContainer}>
 
-          </View> */}
-        {/* </View> */}
+  
+          <View style={styles.content}>
+            <Text style={styles.contentName}>First name</Text>
+            <Text style={styles.contentText}>{firstName}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={styles.contentName}>Last name</Text>
+            <Text style={styles.contentText}>{lastName}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={styles.contentName}>Email Id</Text>
+            <Text style={styles.contentText}>{emailId}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={[styles.contentName,styles.contentNameBlack]}>Preferred Pronounce</Text>
+            <Text style={[styles.contentText,styles.contentTextBlack]}>{pronounce}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={[styles.contentName,styles.contentNameBlack]}>Personal Phone Number</Text>
+            <Text style={[styles.contentText,styles.contentTextBlack]}>{mobile}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={[styles.contentName,styles.contentNameBlack]}>Home Town</Text>
+            <Text style={[styles.contentText,styles.contentTextBlack]}>{hometown}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={[styles.contentName,styles.contentNameBlack]}>Blood Group</Text>
+            <Text style={[styles.contentText,styles.contentTextBlack]}>{bloodGroup}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={[styles.contentName,styles.contentNameBlack]}>Date of Birth</Text>
+            <Text style={[styles.contentText,styles.contentTextBlack]}>{dateOfBirth}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={[styles.contentName,styles.contentNameBlack]}>Highest Education</Text>
+            <Text style={[styles.contentText,styles.contentTextBlack]}>{education}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={[styles.contentName,styles.contentNameBlack]}>Brief About Me</Text>
+            <Text style={[styles.contentText,styles.contentTextBlack]}>{brief}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={[styles.contentName,styles.contentNameBlack]}>Ask me about/Experience</Text>
+            <Text style={[styles.contentText,styles.contentTextBlack]}>{askme}</Text>
+          </View>
+          </View>
+        </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }
@@ -174,11 +218,6 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     padding: 10,
-    // borderWidth: 0.1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // alignSelf: 'center',
-    // padding: 12,
     borderRadius: 50,
   },
   pencilIconContainer: {
@@ -189,5 +228,52 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     padding: 6,
     borderRadius: 50,
+    marginBottom: 6,
   },
+  infoContainer: {
+    borderWidth: 1,
+    // margin: -10,
+    padding: 30,
+    margin: 20,
+    borderRadius: 25,
+    borderColor: 'grey',
+
+    backgroundColor: '#f1f1f1',
+  },
+  personalText: {
+    fontSize: 22,
+    fontWeight: 700,
+  },
+  content: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // borderWidth: 1,
+    marginTop: 5,
+    width: responsiveWidth(75),
+  },
+  contentName: {
+    color: 'grey',
+    fontSize: 18,
+    // borderWidth: 1,
+    // padding: 2,
+    marginLeft: -10,
+    width: responsiveWidth(35)
+  },
+  contentText: {
+    marginLeft: 5,
+    color: 'grey',
+    fontSize: 18,
+    // borderWidth: 1,
+    width: responsiveWidth(40)
+  },
+  contentContainer: {
+    padding: 10,
+    marginTop: 40,
+  },
+  contentNameBlack: {
+    color: '#000000',
+  },
+  contentTextBlack: {
+    color: '#000000',
+  }
 });

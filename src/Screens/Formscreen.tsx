@@ -15,6 +15,8 @@ import {responsiveWidth} from 'react-native-responsive-dimensions';
 import ImagePicker, {openCamera} from 'react-native-image-crop-picker';
 import DateInput from '../Components/DateInput';
 import DropdownInput from '../Components/DropdownInput';
+import MaterailIcons from 'react-native-vector-icons/MaterialIcons';
+
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {
   check,
@@ -34,7 +36,7 @@ interface IState {
   pronounce: string;
   hometown: string;
   address: string;
-  
+
   errors: {
     firstNameError: string;
     lastNameError: string;
@@ -43,12 +45,15 @@ interface IState {
   };
   onChangeDate: () => void;
 }
+
+
 export default class Formscreen extends Component<IState> {
   firstNameRef = createRef<TextInput>();
   lastNameRef = createRef<TextInput>();
   emailRef = createRef<TextInput>();
   mobileRef = createRef<TextInput>();
-  refRBSheet = createRef<RBSheet>();
+  refRBSheet = createRef<typeof RBSheet>();
+  refRBSheetForPic = createRef<typeof RBSheet>();
   // refRBSheet = useRef();
 
   state = {
@@ -127,70 +132,18 @@ export default class Formscreen extends Component<IState> {
   };
 
   onPressPickImage = async () => {
-    // console.log('118', PERMISSIONS.IOS);
     if (Platform.OS === 'android') {
-      try {
-        const cameraAccess = await check(PERMISSIONS.ANDROID.CAMERA);
-        const mediaAccess = await check(PERMISSIONS.ANDROID.READ_MEDIA_IMAGES);
-        console.log('122', cameraAccess, mediaAccess);
-        if (cameraAccess == RESULTS.BLOCKED && mediaAccess == RESULTS.BLOCKED) {
-          openSettings('application');
-        } else if (
-          cameraAccess == RESULTS.DENIED &&
-          mediaAccess == RESULTS.DENIED
-        ) {
-          const cameraAccess = await request(PERMISSIONS.ANDROID.CAMERA);
-          const mediaAccess = await request(
-            PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
-          );
-          console.log('137', cameraAccess, mediaAccess);
-          if (
-            cameraAccess == RESULTS.GRANTED &&
-            mediaAccess == RESULTS.GRANTED
-          ) {
-            const image = await ImagePicker.openPicker({
-              cropping: true,
-            });
-            this.setState({imageUrl: image.path});
-          } // openCamera();
-        } else {
-          const image = await ImagePicker.openPicker({
-            cropping: true,
-          });
-          this.setState({imageUrl: image.path});
-        }
-      } catch (error) {
-        console.log('Error While selecting Images');
-      }
+      this.refRBSheetForPic.current?.open();
     } else {
-      try {
-        const mediaAccess = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
-        console.log('160', mediaAccess);
-        if (mediaAccess == RESULTS.DENIED || mediaAccess == RESULTS.BLOCKED) {
-          openSettings('application');
-        } else {
-          const image = await ImagePicker.openPicker({
-            cropping: true,
-          });
-          this.setState({imageUrl: image.path});
-        }
-      } catch (error) {
-        console.log(error);
-      }
+      const image = await ImagePicker.openPicker({
+        cropping: true,
+      });
+      this.setState({imageUrl: image.path});
     }
-
-    // try {
-    //   const image = await ImagePicker.openPicker({
-    //     cropping: true,
-    //   });
-    //   this.setState({imageUrl: image.path});
-    // } catch (error) {
-    //   console.log('Error While selecting Images');
-    // }
   };
 
   onPressSaveButton = () => {
-    console.log('save data');
+    // console.log('save data');
     const {firstName, lastName, emailId, mobile, errors} = this.state;
 
     if (!this.validateName(firstName)) {
@@ -232,7 +185,7 @@ export default class Formscreen extends Component<IState> {
       errors.mobileError = '* Mobile Number should have 10 characters'; // Update error message
     } else {
       this.refRBSheet.current?.open();
-      
+
       // console.log('158 - Form is valid, State:', this.state);
     }
   };
@@ -241,7 +194,78 @@ export default class Formscreen extends Component<IState> {
     // console.log('240',this.state.errors)
     this.refRBSheet.current?.close();
     this.props.navigation.navigate('PersonalInfo', {userData: this.state});
-  }
+  };
+
+  onPressOpenCameraButton = async () => {
+    // console.log('250');
+    this.refRBSheetForPic.current?.close();
+    if (Platform.OS === 'android') {
+      const cameraAccess = await check(PERMISSIONS.ANDROID.CAMERA);
+      // console.log('253', cameraAccess);
+      if (cameraAccess === RESULTS.BLOCKED) {
+        openSettings('application');
+        // console.log('258', image);
+        // this.setState({imageUrl: image.path});
+      } else if (cameraAccess === RESULTS.DENIED) {
+        const access = await request(PERMISSIONS.ANDROID.CAMERA);
+        // console.log('access', access);
+        if (access === RESULTS.GRANTED) {
+          const image = await ImagePicker.openCamera({
+            cropping: true,
+        });
+          this.setState({imageUrl: image.path});
+        } else {
+          openSettings('application');
+        }
+        // openSettings('application');
+      } else {
+        const image = await ImagePicker.openCamera({
+          cropping: true,
+        });
+
+        this.setState({imageUrl: image.path});
+      }
+    }
+  };
+
+  onPressNextPageButton = () => {
+    // console.log('230')
+    this.props.navigation.navigate('Apiscreen');
+  };
+
+  onPressPickImageButton = async () => {
+    // console.log('250');
+    this.refRBSheetForPic.current?.close();
+    if (Platform.OS === 'android') {
+      const mediaAccess = await check(PERMISSIONS.ANDROID.READ_MEDIA_IMAGES);
+      // console.log('253', mediaAccess);
+      if (mediaAccess === RESULTS.BLOCKED) {
+        openSettings();
+        // const image = await ImagePicker.openPicker({
+        //   cropping: true,
+        // });
+        // console.log('258', image);
+        // this.setState({imageUrl: image.path});
+      } else if (mediaAccess === RESULTS.DENIED) {
+         const access = await request(PERMISSIONS.ANDROID.READ_MEDIA_IMAGES);
+        //  console.log('248',access)
+         if (access === RESULTS.GRANTED){
+          const image = await ImagePicker.openPicker({
+          cropping: true,
+        });
+        // console.log('258', image);
+        this.setState({imageUrl: image.path});
+         }
+      } else {
+        const image = await ImagePicker.openPicker({
+          cropping: true,
+        });
+        // console.log('258', image);
+        this.setState({imageUrl: image.path});
+
+      }
+    }
+  };
 
   handleDateChange = (date: string) => {
     // console.log('121',date)
@@ -272,10 +296,21 @@ export default class Formscreen extends Component<IState> {
     } = this.state;
     return (
       <SafeAreaView style={{backgroundColor: '#ffffff'}}>
-        <ScrollView >
-          <View style={styles.headerContainer}>
-            <Text style={styles.header}>Personal Info</Text>
+        <ScrollView>
+          <View style={styles.topContainer}>
+            <MaterailIcons
+              onPress={this.onPressNextPageButton}
+              name="arrow-back-ios"
+              size={30}
+            />
+            <View style={styles.profile}>
+              <Text style={styles.profileText}>Personal Info</Text>
+            </View>
+            {/* <Text style={styles.profileText}>Profile</Text> */}
           </View>
+          {/* <View style={styles.headerContainer}>
+            <Text style={styles.header}>Personal Info</Text>
+          </View> */}
           <View style={styles.imageContainer}>
             <View>
               {imageUrl ? (
@@ -292,11 +327,7 @@ export default class Formscreen extends Component<IState> {
             <TouchableOpacity
               style={styles.pencilIconContainer}
               onPress={this.onPressPickImage}>
-              <SimpleLineIcons
-                name="pencil"
-                size={20}
-                
-              />
+              <SimpleLineIcons name="pencil" size={20} />
             </TouchableOpacity>
           </View>
           <View style={styles.formContainer}>
@@ -439,18 +470,13 @@ export default class Formscreen extends Component<IState> {
 
           <View>
             <View style={{flex: 1}}>
-              {/* <Button
-                title="OPEN BOTTOM SHEET"
-                onPress={() => this.refRBSheet.current.open()}
-              /> */}
               <RBSheet
                 ref={this.refRBSheet}
                 useNativeDriver={true}
-                
                 customStyles={{
                   wrapper: {
                     backgroundColor: 'transparent',
-                    height: 200
+                    height: 200,
                   },
                   container: {
                     height: '25%',
@@ -468,22 +494,74 @@ export default class Formscreen extends Component<IState> {
                 }}
                 customAvoidingViewProps={{
                   enabled: false,
-                }}
-                >
-                  <View style={styles.bottomSheet}>
+                }}>
+                <View style={styles.bottomSheet}>
                   <Text style={styles.submitText}>Do you want to Submit ?</Text>
                   <View style={styles.sheetContainer}>
                     {/* <Text style={styles.submitText}>Do you want to Submit ?</Text> */}
-                    <TouchableOpacity style={styles.SubmitButton} onPress={this.onPressSubmitButton}>
+                    <TouchableOpacity
+                      style={styles.SubmitButton}
+                      onPress={this.onPressSubmitButton}>
                       <Text style={styles.btnText}>Submit</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.cancelButton}>
                       <Text style={styles.btnText}>Cancel</Text>
                     </TouchableOpacity>
-                    
                   </View>
+                </View>
+
+                {/* <YourOwnComponent /> */}
+              </RBSheet>
+            </View>
+          </View>
+          <View>
+            <View style={{flex: 1}}>
+              {/* <Button
+                title="OPEN BOTTOM SHEET"
+                onPress={() => this.refRBSheet.current.open()}
+              /> */}
+              <RBSheet
+                ref={this.refRBSheetForPic}
+                useNativeDriver={true}
+                customStyles={{
+                  wrapper: {
+                    backgroundColor: 'transparent',
+                    height: 200,
+                  },
+                  container: {
+                    height: '25%',
+                    borderTopRightRadius: 35,
+                    borderTopLeftRadius: 35,
+                    backgroundColor: '#f1f1f1',
+                  },
+                  draggableIcon: {
+                    backgroundColor: '#000',
+                  },
+                }}
+                customModalProps={{
+                  animationType: 'slide',
+                  statusBarTranslucent: true,
+                }}
+                customAvoidingViewProps={{
+                  enabled: false,
+                }}>
+                <View style={styles.bottomSheet}>
+                  <Text style={styles.submitText}>Pick Any One ?</Text>
+                  <View style={styles.sheetContainer}>
+                    {/* <Text style={styles.submitText}>Do you want to Submit ?</Text> */}
+                    <TouchableOpacity
+                      style={styles.SubmitButton}
+                      onPress={this.onPressOpenCameraButton}>
+                      <Text style={styles.btnText}>Open Camera</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.cancelButton}
+                      onPress={this.onPressPickImageButton}>
+                      <Text style={styles.btnText}>Pick from Image</Text>
+                    </TouchableOpacity>
                   </View>
-              
+                </View>
+
                 {/* <YourOwnComponent /> */}
               </RBSheet>
             </View>
@@ -582,7 +660,7 @@ const styles = StyleSheet.create({
   },
   bottomSheet: {
     flex: 1,
-    justifyContent:'center',
+    justifyContent: 'center',
     alignItems: 'center',
     margin: 10,
     // borderWidth: 1,
@@ -600,7 +678,7 @@ const styles = StyleSheet.create({
     padding: 6,
     width: responsiveWidth(35),
     borderRadius: 20,
-    margin: 2
+    margin: 2,
     // justifyContent: 'center'
   },
   cancelButton: {
@@ -608,12 +686,11 @@ const styles = StyleSheet.create({
     padding: 6,
     width: responsiveWidth(35),
     borderRadius: 20,
-    margin: 2
-
+    margin: 2,
   },
   btnText: {
     color: '#ffffff',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 600,
     textAlign: 'center',
   },
@@ -621,5 +698,24 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 700,
   },
- 
+  topContainer: {
+    flexDirection: 'row',
+    // borderWidth: 1,
+    // justifyContent: 'space-around',
+    backgroundColor: '#ffffff',
+    margin: 15,
+  },
+  profile: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    //  borderWidth: 1,
+    alignSelf: 'center',
+    marginLeft: responsiveWidth(22),
+    //  textAlign:'center'
+  },
+  profileText: {
+    fontSize: 24,
+    fontWeight: 700,
+    textAlign: 'center',
+  },
 });
