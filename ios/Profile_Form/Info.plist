@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>openPhoto</string>
+	<string>Allow app to access device photo library</string>
 	<key>NSCameraUsageDescription</key>
 	<string>openCamera</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

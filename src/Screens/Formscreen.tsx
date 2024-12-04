@@ -306,11 +306,7 @@ export default class Formscreen extends Component<IState> {
             <View style={styles.profile}>
               <Text style={styles.profileText}>Personal Info</Text>
             </View>
-            {/* <Text style={styles.profileText}>Profile</Text> */}
           </View>
-          {/* <View style={styles.headerContainer}>
-            <Text style={styles.header}>Personal Info</Text>
-          </View> */}
           <View style={styles.imageContainer}>
             <View>
               {imageUrl ? (
@@ -516,10 +512,6 @@ export default class Formscreen extends Component<IState> {
           </View>
           <View>
             <View style={{flex: 1}}>
-              {/* <Button
-                title="OPEN BOTTOM SHEET"
-                onPress={() => this.refRBSheet.current.open()}
-              /> */}
               <RBSheet
                 ref={this.refRBSheetForPic}
                 useNativeDriver={true}

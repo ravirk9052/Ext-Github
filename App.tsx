@@ -6,6 +6,8 @@ import {StyleSheet} from 'react-native';
 import PersonalInfo from './src/Screens/PersonalInfo';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import ApiScreen from './src/Screens/ApiScreen';
+import CameraModel from './src/Screens/CameraModel';
+import CarouselScreen from './src/Screens/CarouselScreen';
 
 type RootStackParamList = {
   Formscreen: undefined;
@@ -23,7 +25,8 @@ export default class App extends Component<RootStackParamList> {
             <Stack.Screen name="FormScreen" component={Formscreen} />
             <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
             <Stack.Screen name="Apiscreen" component={ApiScreen} />
-          
+            <Stack.Screen name="CameraModel" component={CameraModel} />
+            <Stack.Screen name="CarouselScreen" component={CarouselScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </GestureHandlerRootView>

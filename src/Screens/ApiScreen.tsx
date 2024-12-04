@@ -9,7 +9,10 @@ import {
 } from 'react-native';
 import React, {Component, createRef} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {responsiveWidth} from 'react-native-responsive-dimensions';
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 import axios from 'axios';
 
 import MaterailIcons from 'react-native-vector-icons/MaterialIcons';
@@ -22,6 +25,7 @@ interface IState {
   isDeleteLoader: boolean | null;
   isPatchLoader: boolean | null;
 }
+//https://github.com/ravirk9052/profile_form_native_nov29.git
 
 export default class ApiScreen extends Component<{}, IState> {
   constructor(props: {}) {
@@ -47,7 +51,7 @@ export default class ApiScreen extends Component<{}, IState> {
       const apiCall = await axios.get(
         'https://jsonplaceholder.typicode.com/posts',
       );
-      const response = await apiCall.data;
+      const response = apiCall.data;
       this.setState({apiData: response});
       this.setState({isLoader: false});
     }, 2000);
@@ -75,7 +79,7 @@ export default class ApiScreen extends Component<{}, IState> {
       if (apiCall.status === 201) {
         this.setState({isPostLoader: false});
       }
-    }, 1000);
+    }, 100);
   };
 
   onPressPutData = () => {
@@ -97,7 +101,7 @@ export default class ApiScreen extends Component<{}, IState> {
         },
       );
 
-      const response =  apiCall.status;
+      const response = apiCall.status;
 
       if (apiCall.status === 200) {
         this.setState({isPutLoader: false});
@@ -159,6 +163,9 @@ export default class ApiScreen extends Component<{}, IState> {
   onPressBackButton = () => {
     this.props.navigation.navigate('FormScreen');
   };
+  onPressForwardButton = () => {
+    this.props.navigation.navigate('CameraModel'); 
+  }
 
   render() {
     const {
@@ -180,6 +187,11 @@ export default class ApiScreen extends Component<{}, IState> {
           <View style={styles.profile}>
             <Text style={styles.profileText}>Profile</Text>
           </View>
+          <MaterailIcons
+            onPress={this.onPressForwardButton}
+            name="arrow-forward-ios"
+            size={30}
+          />
         </View>
         <View style={styles.container}>
           <TouchableOpacity
@@ -211,7 +223,9 @@ export default class ApiScreen extends Component<{}, IState> {
 
         {isLoader ? (
           <>
-            <ActivityIndicator />
+            <View style={styles.indicatorStyle}>
+              <ActivityIndicator size="large" color="blue" />
+            </View>
             {/* <Text>HEllo ravikiran</Text> */}
           </>
         ) : (
@@ -225,7 +239,9 @@ export default class ApiScreen extends Component<{}, IState> {
         )}
 
         {isPostLoader === null ? null : isPostLoader === true ? (
-          <ActivityIndicator />
+          <View style={styles.indicatorStyle}>
+            <ActivityIndicator size="large" color="blue" />
+          </View>
         ) : (
           <View>
             <View style={styles.itemContainer}>
@@ -235,7 +251,9 @@ export default class ApiScreen extends Component<{}, IState> {
         )}
 
         {isPutLoader === null ? null : isPutLoader === true ? (
-          <ActivityIndicator />
+          <View style={styles.indicatorStyle}>
+            <ActivityIndicator size="large" color="blue" />
+          </View>
         ) : (
           <View>
             <View style={styles.itemContainer}>
@@ -245,7 +263,9 @@ export default class ApiScreen extends Component<{}, IState> {
         )}
 
         {isDeleteLoader === null ? null : isDeleteLoader === true ? (
-          <ActivityIndicator />
+          <View style={styles.indicatorStyle}>
+            <ActivityIndicator size="large" color="blue" />
+          </View>
         ) : (
           <View>
             <View style={styles.itemContainer}>
@@ -255,7 +275,9 @@ export default class ApiScreen extends Component<{}, IState> {
         )}
 
         {isPatchLoader === null ? null : isPatchLoader === true ? (
-          <ActivityIndicator />
+          <View style={styles.indicatorStyle}>
+            <ActivityIndicator size="large" color="blue" />
+          </View>
         ) : (
           <View>
             <View style={styles.itemContainer}>
@@ -274,8 +296,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexWrap: 'wrap',
-    borderWidth: 0.1,
-    backgroundColor: '#eeffff',
+    // borderWidth: 0.1,
+    // backgroundColor: '#ffffff',
     borderRadius: 20,
     margin: 5,
   },
@@ -297,6 +319,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     margin: 8,
     padding: 8,
+    borderRadius: 15,
   },
   bottomSheet: {
     flex: 1,
@@ -314,20 +337,25 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     margin: 15,
+    // borderWidth: 1,
   },
 
   profile: {
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    marginLeft: responsiveWidth(30),
- 
+    // marginLeft: responsiveWidth(30),
   },
   profileText: {
     fontSize: 24,
     fontWeight: 700,
     textAlign: 'center',
+  },
+  indicatorStyle: {
+    flex: 1,
+    marginTop: responsiveHeight(35),
   },
 });
 //#52C9DE
